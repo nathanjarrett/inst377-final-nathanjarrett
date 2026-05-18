@@ -2,6 +2,7 @@ let products = []; // stores cached products to run w/o reload
 let answer = "";
 let currentCategory = "";
 let score = 0;
+let currentUser = "";
 let scoreChart = null;
 
 
@@ -58,17 +59,25 @@ function giveUp() {
     document.getElementById("answer").textContent = answer;
 }
 
+// keeps score associated with unique user
+function getUsername() {
+    const username = document
+        .getElementById('username').value.trim();
+
+    if (username !== currentUser) {
+        currentUser = username;
+        score = 0;
+    }
+    return username;
+}
+
 // save score to backend
 async function saveScore() {
-    const username = document
-        .getElementById('username')
-        .value
-        .trim();
+    const username = getUsername();
 
-    if (username === '') {
+    if (!username) {
         Swal.fire({
             title: 'Username Required',
-            text: 'Please enter a username.',
             icon: 'warning'
         });
         return;

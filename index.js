@@ -23,31 +23,46 @@ app.get('/', (req, res) => {
 
 // fetch 1 - access API
 app.get('/food', async (req, res) => {
-    console.log('Getting food data');
-
-    // creates random categories to reduce  size of call
-    const categories = ['snacks','candy','chips','nabisco','pepsico','kelloggs','utz','general mills'];
-
-    const cat = categories[
-        Math.floor(Math.random() * categories.length)
-    ];
 
     try {
-        const response = await fetch(
-            `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${cat}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,ingredients_text&lc=en&countries=United%20States`
-        );
+        // creates random categories to reduce  size of call
+        const categories = ["snacks","candy","chips","nabisco","pepsico"];
+
+        const cat = categories[Math.floor(Math.random() * categories.length)];
+
+        const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${cat}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,ingredients_text&lc=en&countries=United%20States`);
+
+        if (!response.ok) {
+            return res.status(500).json({
+                message: "Open Food Facts failed",
+                status: response.status
+            });
+        }
 
         const data = await response.json();
 
+        if (!data.products || data.products.length === 0) {
+            return res.status(500).json({
+                message: "No products returned"
+            });
+        }
+
         // loads one type of prodcuct to use for one session
-        const products = data.products.filter(p => p.product_name && p.ingredients_text); // filters out just name and ingredients;
+        const products = data.products.filter(p => p && p.product_name && p.ingredients_text); // filters out just name and ingredients
+
+
+        if (products.length === 0) {
+            return res.status(500).json({
+                message: "No valid products after filtering"
+            });
+        }
 
         res.json(products);
 
     } catch (error) {
-        console.log(error);
+        console.log("Food route error:", error);
         res.status(500).json({
-            message: 'Error retrieving food data'
+            message: "Server error in /food route"
         });
     }
 });

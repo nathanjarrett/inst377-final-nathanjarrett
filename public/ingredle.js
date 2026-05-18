@@ -82,7 +82,6 @@ async function saveScore() {
         },
         body: JSON.stringify({
             username: username,
-            score: sessionScore
         })
     });
 }

@@ -69,22 +69,25 @@ app.get('/food', async (req, res) => {
 
 // fetch 2 - post score to db
 app.post('/score', async (req, res) => {
-
     console.log('Saving score');
-
     const username = req.body.username;
-    const score = req.body.score;
 
-    // checks for unique usernames
-    const { data, error } = await supabase.from('scores')
-        .upsert({
-            username: username, 
-            score: score
-            },
-            {
-                onConflict: 'username'
-            }
-        ).select();
+    // first get the current score
+    const { data: existing } = await supabase
+        .from('scores')
+        .select('score')
+        .eq('username', username)
+        .single();
+
+    const newScore = (existing?.score || 0) + 1;
+
+    const { data, error } = await supabase
+        .from('scores')
+        .upsert(
+            { username: username, score: newScore },
+            { onConflict: 'username' }
+        )
+        .select();
 
     if (error) {
         console.log(error);

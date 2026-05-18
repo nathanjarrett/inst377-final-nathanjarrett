@@ -1,12 +1,9 @@
 let products = []; // stores cached products to run w/o reload
 let answer = "";
-let currentCategory = "";
-let sessionScore = 0;
-let currentUser = "";
 let scoreChart = null;
 
 
-async function load(c) {
+async function load() {
     const res = await fetch(`/food`);
     const data = await res.json();
     
@@ -31,7 +28,6 @@ async function check() {
     // allows for flexibility in user guess
     // if guess is contained in answer then its correct
     if (answer.includes(guess)) {
-        sessionScore++;
         document.getElementById("answer").textContent = answer;
 
         // sweet alert 2'
@@ -92,8 +88,6 @@ async function loadScores() {
     const res = await fetch('/scores');
     const data = await res.json();
 
-    console.log(data);
-
     const names = data.map(x => x.username);
     const scores = data.map(x => x.score);
 
@@ -123,17 +117,4 @@ async function loadScores() {
     });
 }
 
-//loads previous user scores with username
-async function loadUserScore() {
-
-    const username = getUsername();
-    if (!username) return;
-
-    const res = await fetch(`/score/${username}`);
-    const data = await res.json();
-
-    sessionScore = data.score || 0;
-}
-
 load();
-document.getElementById('username').addEventListener('change', loadUserScore);

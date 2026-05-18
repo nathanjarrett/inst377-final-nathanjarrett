@@ -2,6 +2,7 @@ let products = []; // stores cached products to run w/o reload
 let answer = "";
 let currentCategory = "";
 let score = 0;
+let scoreChart = null;
 
 
 async function load(c) {
@@ -21,7 +22,6 @@ function next() {
     document.getElementById("ingredients").textContent = p.ingredients_text;
     document.getElementById("result").textContent = "";
     document.getElementById("answer").textContent = "";
-    document.getElementById("hintText").textContent = "";
     document.getElementById("guess").value = "";
 }
 
@@ -62,13 +62,21 @@ function giveUp() {
     document.getElementById("answer").textContent = answer;
 }
 
-function hint(){
-    // prints search category from API link
-    document.getElementById("hintText").textContent = "Hint: " + cat;
-}
-
 // save score to backend
 async function saveScore() {
+    const username = document
+        .getElementById('username')
+        .value
+        .trim();
+
+    if (username === '') {
+        Swal.fire({
+            title: 'Username Required',
+            text: 'Please enter a username.',
+            icon: 'warning'
+        });
+        return;
+    }
 
     await fetch('/score', {
         method: 'POST',
@@ -76,7 +84,7 @@ async function saveScore() {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            username: 'Player',
+            username: username,
             score: score
         })
     });
@@ -84,9 +92,11 @@ async function saveScore() {
 
 // load scores from backend
 async function loadScores() {
-    const res = await fetch('/scores');
 
+    const res = await fetch('/scores');
     const data = await res.json();
+
+    console.log(data);
 
     const names = data.map(x => x.username);
     const scores = data.map(x => x.score);
@@ -95,14 +105,24 @@ async function loadScores() {
         .getElementById('scoreChart')
         .getContext('2d');
 
-    new Chart(ctx, {
+    // destroy old chart before creating new one
+    if (scoreChart) {
+        scoreChart.destroy();
+    }
+
+    scoreChart = new Chart(ctx, {
         type: 'bar',
         data: {
+
             labels: names,
+
             datasets: [{
                 label: 'Scores',
                 data: scores
             }]
+        },
+        options: {
+            responsive: true
         }
     });
 }

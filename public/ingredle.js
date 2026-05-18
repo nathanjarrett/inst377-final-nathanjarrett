@@ -1,7 +1,7 @@
 let products = []; // stores cached products to run w/o reload
 let answer = "";
-let categories = ["snacks", "candy", "chips", 'nabisco', "pepsico", 'kelloggs', 'utz', 'general mills']; // reduces search return field
-const cat = categories[Math.floor(Math.random() * categories.length)]; // selects random one
+let currentCategory = "";
+let score = 0;
 
 
 async function load(c) {

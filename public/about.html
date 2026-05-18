@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <title>Ingredle Rules</title>
+        <link rel="stylesheet" href="ingredle.css">
+    </head>
+    <body>
+        <header>
+            <h1>Ingredle</h1>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="ingredle.html">Home</a></li>
+                <li><a href="rules.html">Rules</a></li>
+            </ul>
+        </nav>
+
+        <div class="bodyText">
+            <h2>What is the problem we're hoping to solve?</h2>
+                <p>Most people do not understand what is in packaged food. Ingredient labels are long, technical, and ignored. 
+                Most household products contain a long list of additives, preservatives, and refined components.
+                Poor food choices leads to poor health outcomes, especially with added sugars, seed oils, and processed ingredients. 
+                The problem is not lack of access, it is lack of engagement. People see the label but do not process it.</p>
+            <h2>Who cares about this problem?</h2>
+                <p>Consumers care because it affects health and diet. 
+                Students and young adults are a key group because they rely heavily on packaged food. 
+                Parents also care because they choose food for their families and growing children. 
+                Public health organizations and nutrition educators care because diet quality is linked to obesity and chronic disease.</p>
+            <h2>What are we doing to help solve the problem?</h2>
+                <p>Ingredle turns ingredient labels into an interactive task where users have to identify products from ingredients alone. 
+                This forces them to look closely at what is inside common household food products. While it might seem simple at first, we believe most people will struggle to identify common foods.
+                This difficulty is intentional because it highlights how much of modern packaged food is made from processed or lab-developed substances rather than simple, recognizable foods. 
+                Hopefully, this encourges users to change their eating habits and to look for foods with only ingredients they can pronounce.</p>
+            <h2>What API are we using?</h2>
+                <p>We are using the Open Food Facts API. The information problem is access to real product ingredient data at scale. 
+                We need a large dataset of packaged foods with ingredient lists. 
+                Open Food Facts provides this data for free and does not require authentication. 
+                It includes thousands of real products, which makes the game realistic and varied.</p>
+            <blockquote>https://world.openfoodfacts.org/cgi/search.pl?search_terms=a&search_simple=1&action=process&json=1&page_size=20&fields=product_name,ingredients_text</blockquote>
+        </div>
+    </body>
+</html>

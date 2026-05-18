@@ -1,0 +1,46 @@
+<html>
+    <head>
+        <title>Ingredle</title>
+
+        <!-- libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+        <script src="ingredle.js" defer></script>
+        <link rel="stylesheet" href="ingredle.css">
+    </head>
+    <body>
+        <header>
+            <h1>Ingredle</h1>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="rules.html">Rules</a></li>
+                <li><a href="about.html">About Us</a></li>
+            </ul>
+        </nav>
+
+        <div id="ingredients">Ingredients loading... If it takes longer than 5 seconds, refresh your page.</div>  
+
+        <input id="guess" placeholder="Enter product name" required>
+        <br>
+
+        <button onclick="check()" style="background-color: lime">Guess</button>
+        <button onclick="hint()" style="background-color: yellow">Hint</button>
+        <button onclick="giveUp()" style="background-color: red">Give Up</button>
+        <button onclick="next()" style="background-color: cyan">Next</button>
+
+
+        <p id="result"></p>
+        <p id="answer"></p>
+        <p id="hint"></p>
+
+
+        <h2>Leaderboard</h2>
+
+        <canvas id="scoreChart"></canvas>
+
+    </body>
+</html>

@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const supabaseClient = require('@supabase/supabase-js');
-const {isValidStateAbbreviation} = require("usa-state-validator");
 const dotenv = require('dotenv');
 
 
@@ -10,56 +9,88 @@ const port = 5000;
 dotenv.config();
 
 app.use(bodyParser.json());
+app.use(express.static(__dirname + '/public'));
 
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
-app.get('/customers', async (req, res) => {
-    console.log('Attempting to get all customers!');
+// home page
+app.get('/', (req, res) => {
+    res.sendFile('public/ingredle.html', { root: __dirname});
+});
 
-    const { data, error } = await supabase.from('customer').select();
+
+// fetch 1 - access API
+app.get('/food', async (req, res) => {
+
+    console.log('Getting food data');
+
+    const categories = ['snacks','candy','chips','nabisco','pepsico','kelloggs','utz','general mills'];
+
+    const cat = categories[
+        Math.floor(Math.random() * categories.length)
+    ];
+
+    try {
+
+        const response = await fetch(
+            `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${cat}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,ingredients_text&lc=en&countries=United%20States`
+        );
+
+        const data = await response.json();
+        
+        // loads one type of prodcuct to use for one session
+        const products = data.products.filter(p => p.product_name && p.ingredients_text); // filters out just name and ingredients;
+
+        res.json(products);
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Error retrieving food data'
+        });
+    }
+});
+
+// fetch 2 - post score to db
+app.post('/score', async (req, res) => {
+
+    console.log('Saving score');
+
+    const username = req.body.username;
+    const score = req.body.score;
+
+    const { data, error } = await supabase.from('scores').insert({
+        username: username, 
+        score: score
+        })
+        .select();
 
     if (error) {
-        console.log(`Error: ${error}`);
-        res.statusCode = 500;
-        res.send(error);
+        console.log(error);
+        res.status(500).send(error);
     } else {
-        console.log('Recieved Data: ', data);
         res.json(data);
     }
 });
 
-app.post('/customer', async (req, res) => {
-    console.log('Adding Customer');
-    console.log(`Request: ${JSON.stringify(req.body)}`);
+// fetch 3 - get scores from db
+app.get('/scores', async (req, res) => {
 
-    const firstName = req.body.firstName;
-    const lastName = req.body.lastName;
-    const state = req.body.state;
+    console.log('Getting scores');
 
-    if(!isValidStateAbbreviation(state)){
-        console.log(`State: ${state} is invalid`);
-        res.statusCode = 400;
-        res.json({message: `${state} is not a valid 2 letter abbreviation for state`,});
-        return;
-    }
-
-    const { data, error } = await supabase.from('customer').insert({
-        customer_first_name: firstName,
-        customer_last_name: lastName,
-        customer_state: state,
-    })
-    .select();
+    const { data, error } = await supabase.from('scores').select()
+        .order('score', {
+            ascending: false
+        });
 
     if (error) {
-        console.log(`Error: ${error}`);
-        res.statusCode = 500;
-        res.send(error);
+        console.log(error);
+        res.status(500).send(error);
     } else {
         res.json(data);
     }
-
 });
 
 app.listen(port, () => {

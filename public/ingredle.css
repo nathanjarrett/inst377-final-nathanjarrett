@@ -1,0 +1,51 @@
+body {
+    text-align: center;
+    background-color: #D9BF77;
+}
+
+#ingredients {
+    padding: 10px;
+    width: 400px;
+    margin: 0 auto 10px;
+    background-color: #edf7bd;
+}
+
+input, button {
+    padding: 8px;
+    margin: 5px;
+}
+
+
+header {
+    background-color: #205D67;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+nav ul {
+    list-style:none;
+    margin:0;
+    padding:0;
+    background-color: #85c79a;
+    display:flex;
+    justify-content:center;
+}
+
+nav ul li {
+    padding:15px 30px;
+}
+
+nav ul li:hover {
+    background-color: #639a76;
+}
+
+nav ul li a {
+    text-decoration:none;
+    color:black;
+}
+
+.bodyText {
+    color: black;
+    margin: 0px 400px;
+}

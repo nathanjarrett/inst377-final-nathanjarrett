@@ -1,7 +1,7 @@
 let products = []; // stores cached products to run w/o reload
 let answer = "";
 let currentCategory = "";
-let score = 0;
+let sessionScore = 0;
 let currentUser = "";
 let scoreChart = null;
 
@@ -31,7 +31,7 @@ async function check() {
     // allows for flexibility in user guess
     // if guess is contained in answer then its correct
     if (answer.includes(guess)) {
-        score++;
+        sessionScore++;
         document.getElementById("answer").textContent = answer;
 
         // sweet alert 2'
@@ -42,7 +42,6 @@ async function check() {
         });
 
         await saveScore();
-
         loadScores();
 
     } else {
@@ -83,7 +82,7 @@ async function saveScore() {
         },
         body: JSON.stringify({
             username: username,
-            score: score
+            score: sessionScore
         })
     });
 }
@@ -134,7 +133,7 @@ async function loadUserScore() {
     const res = await fetch(`/score/${username}`);
     const data = await res.json();
 
-    score = data.score || 0;
+    sessionScore = data.score || 0;
 }
 
 load();

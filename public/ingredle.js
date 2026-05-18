@@ -20,7 +20,6 @@ function next() {
 
     // resets text areas to empty
     document.getElementById("ingredients").textContent = p.ingredients_text;
-    document.getElementById("result").textContent = "";
     document.getElementById("answer").textContent = "";
     document.getElementById("guess").value = "";
 }
@@ -32,7 +31,6 @@ async function check() {
     // if guess is contained in answer then its correct
     if (answer.includes(guess)) {
         score++;
-        document.getElementById("result").textContent = "Correct";
         document.getElementById("answer").textContent = answer;
 
         // sweet alert 2'
@@ -47,8 +45,6 @@ async function check() {
         loadScores();
 
     } else {
-        document.getElementById("result").textContent = "Try again";
-
         Swal.fire({
             title: 'Incorrect',
             text: 'Try another guess.',

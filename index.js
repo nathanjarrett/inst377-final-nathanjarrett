@@ -23,9 +23,9 @@ app.get('/', (req, res) => {
 
 // fetch 1 - access API
 app.get('/food', async (req, res) => {
-
     console.log('Getting food data');
 
+    // creates random categories to reduce  size of call
     const categories = ['snacks','candy','chips','nabisco','pepsico','kelloggs','utz','general mills'];
 
     const cat = categories[
@@ -33,13 +33,12 @@ app.get('/food', async (req, res) => {
     ];
 
     try {
-
         const response = await fetch(
             `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${cat}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,ingredients_text&lc=en&countries=United%20States`
         );
 
         const data = await response.json();
-        
+
         // loads one type of prodcuct to use for one session
         const products = data.products.filter(p => p.product_name && p.ingredients_text); // filters out just name and ingredients;
 
@@ -61,11 +60,16 @@ app.post('/score', async (req, res) => {
     const username = req.body.username;
     const score = req.body.score;
 
-    const { data, error } = await supabase.from('scores').insert({
-        username: username, 
-        score: score
-        })
-        .select();
+    // checks for unique usernames
+    const { data, error } = await supabase.from('scores')
+        .upsert({
+            username: username, 
+            score: score
+            },
+            {
+                onConflict: 'username'
+            }
+        ).select();
 
     if (error) {
         console.log(error);

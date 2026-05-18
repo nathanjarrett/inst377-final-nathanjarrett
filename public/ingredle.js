@@ -61,14 +61,7 @@ function giveUp() {
 
 // keeps score associated with unique user
 function getUsername() {
-    const username = document
-        .getElementById('username').value.trim();
-
-    if (username !== currentUser) {
-        currentUser = username;
-        score = 0;
-    }
-    return username;
+    return document.getElementById('username').value.trim();
 }
 
 // save score to backend
@@ -132,4 +125,17 @@ async function loadScores() {
     });
 }
 
+//loads previous user scores with username
+async function loadUserScore() {
+
+    const username = getUsername();
+    if (!username) return;
+
+    const res = await fetch(`/score/${username}`);
+    const data = await res.json();
+
+    score = data.score || 0;
+}
+
 load();
+document.getElementById('username').addEventListener('change', loadUserScore);

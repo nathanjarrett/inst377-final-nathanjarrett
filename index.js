@@ -112,6 +112,21 @@ app.get('/scores', async (req, res) => {
     }
 });
 
+// fetch 4 - keeps score with username
+app.get('/score/:username', async (req, res) => {
+
+    const username = req.params.username;
+
+    const { data, error } = await supabase
+        .from('scores')
+        .select()
+        .eq('username', username)
+        .single();
+
+    res.json(data || { username, score: 0 });
+});
+
 app.listen(port, () => {
     console.log(`App is available on port: ${port}`);
 });
+
